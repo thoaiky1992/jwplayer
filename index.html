@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Playlist-Music</title>
+	<link rel="stylesheet" href="">
+	<style>
+		.slidecontainer {
+		  width: 300px;
+		  margin-top: 20px;
+		}
+		.slidecontainer > input {
+			width: 200px;
+			margin:8px;	
+		}
+		.slider {
+		  -webkit-appearance: none;
+		  width: 100%;
+		  height: 5px;
+		  border-radius: 5px;
+		  background: #d3d3d3;
+		  outline: none;
+		  opacity: 0.7;
+		  -webkit-transition: .2s;
+		  transition: opacity .2s;
+		}
+
+		.slider:hover {
+		  opacity: 1;
+		}
+
+		.slider::-webkit-slider-thumb {
+		  -webkit-appearance: none;
+		  appearance: none;
+		  width: 10px;
+		  height: 10px;
+		  border-radius: 50%;
+		  background: #4CAF50;
+		  cursor: pointer;
+		}
+
+		.slider::-moz-range-thumb {
+		  width: 25px;
+		  height: 25px;
+		  border-radius: 50%;
+		  background: #4CAF50;
+		  cursor: pointer;
+		}
+		li,input{
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body>
+	<h1>Playlist-Music</h1>
+	<h2 id="title"></h2>
+	<button id="pre">Pre</button>
+	<button id="music">Play</button>
+	<button id="next">Next</button>
+	<div class="slidecontainer">
+		<span  style="float: left;" id="start_time">00:00</span>
+  		<input style="float: left;" type="range" min="1" max="100" value="1" class="slider" id="myRange" >
+  		<span  style="float: left;" id="end_time">00:00</span>
+	</div>
+	<div style="clear:both;margin-top: 50px;">
+		<button type="input" onclick="toogleShow()">Playlist</button>
+	</div>
+	
+	<div id="playlistUser" style="width: 500px;min-height: 300px;border:1px solid #CCC;margin-top: 5px;box-shadow: 0  4px 10px black;">
+		<ul id=list>
+			
+		</ul>
+	</div>
+</body>
+<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+<script src="https://cdn.jwplayer.com/libraries/erAEWCfb.js"></script>
+<script>
+	let list = [
+		{name : 'Muốn cả thế giới biết anh yêu em', file : 'http://localhost:3000/music/1.mp3'},
+		{name : 'Be What You Wanna Be', file : 'http://localhost:3000/music/2.mp3'},
+		{name : 'Xin lỗi Em yêu', file : 'http://localhost:3000/music/3.mp3'}
+	];
+	let index      = 0;
+	let song       = new Audio(list[index].file);
+	let myRange    = document.getElementById("myRange");
+	let interval   = null;
+    let DOM_List   = document.getElementById('list');
+    let next       = document.getElementById('next');
+    let pre        = document.getElementById('pre');
+    let play       = document.getElementById('music');
+    let start_time = document.querySelector('#start_time');
+    let end_time   = document.querySelector('#end_time');
+    let title_song = document.querySelector('#title');
+
+
+    function toogleShow(){
+    	$('#playlistUser').toggle();
+    }
+
+    for(let i = 0 ; i < list.length ; i++){
+    	DOM_List.innerHTML += ('<li class="item" data-index="'+ i+'">'+ list[i].name +'</li>');
+    }
+    window.onload = function(){
+    	let items = document.querySelectorAll('.item');
+    	items.forEach(function(item){
+    		item.addEventListener('click',function(){
+    			song.pause()
+    			clearInterval(interval);
+    			index = parseInt(this.getAttribute('data-index'));
+    			song = new Audio(list[index].file);
+				song.play();
+				interval = setInterval(currentTimeSong,1000)
+    		})
+    	})
+    }
+
+	myRange.addEventListener('change',function(e){
+		song.currentTime = e.target.value;
+	})
+	next.addEventListener('click',function(){
+		myRange.value = 0;
+		start_time.innerHTML = '00:00';
+		song.pause();
+		index++;
+		if(index == list.length)
+			index = 0;
+		console.log(index)
+		song = new Audio(list[index].file);
+		song.play();
+		console.log(index);
+		clearInterval(interval);
+		interval = setInterval(currentTimeSong,1000)
+	})
+	pre.addEventListener('click',function(){
+		myRange.value = 0;
+		start_time.innerHTML = '00:00';
+		clearInterval(interval);
+		song.pause();
+		index--;
+		if(index < 0)
+			index = list.length - 1;
+		song = new Audio(list[index].file);
+		song.play();
+
+		interval = setInterval(currentTimeSong,1000)
+	})
+	play.addEventListener('click',function(e){
+		var text = e.target.innerHTML;
+		if(text == 'Play'){
+			e.target.innerHTML = 'Pause';
+			song.play();
+			interval = setInterval(currentTimeSong,1000)
+		}
+		else{
+			e.target.innerHTML = 'Play';
+			song.pause();
+			clearInterval(interval);
+		}
+	})
+
+	function currentTimeSong(){
+		var curtime = parseInt(song.currentTime);
+	        myRange.setAttribute('max',song.duration)
+	        myRange.value = parseInt(curtime);
+	        if(curtime >= Math.floor(song.duration)){
+	        	document.getElementById('music').innerHTML = 'Play';
+	        	clearInterval(interval);
+	        }
+	        end_time.innerHTML   = convertTime(song.duration);
+	        start_time.innerHTML = convertTime(curtime)
+	        console.log(curtime,parseInt(song.duration))
+	}
+	function convertTime(secs){
+		let minute  = '0' + Math.floor(secs/60);
+		let second = '0' + Math.ceil(secs%60);
+		return minute.slice(-2) + ':' + second.slice(-2);
+	}
+	
+	
+</script>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+    <script src="https://cdn.jwplayer.com/libraries/erAEWCfb.js"></script>
+    <!-- <script src="https://content.jwplatform.com/libraries/x9fWGui0.js"></script> -->
+    <style>
+      li,
+      input {
+        cursor: pointer;
+      }
+      #myalbum-player {
+        /* border-radius: 16px !important; */
+        /* box-shadow: 0 0 3px 1px black !important; */
+        position: fixed;
+        bottom: 0;
+        margin: auto;
+        left: 0;
+        right: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="myalbum-player"></div>
+    <div style="clear: both; margin-top: 50px;">
+      <button type="input" id="toogleShow">Playlist</button>
+    </div>
+
+    <div
+      id="playlistUser"
+      style="width: 500px;
+      min-height: 300px;
+      border: 1px solid #ccc;
+      margin-top: 5px;
+      box-shadow: 0 4px 10px black;
+      display: none;">
+      <ul id="list"></ul>
+    </div>
+    <script type="text/javascript">
+      let windowWidth = window.outerWidth;
+      let index = 0;
+      let DOM_List = document.querySelector('#list');
+      let btnToogleShow = document.querySelector('#toogleShow');
+      let playlistUser = document.querySelector('#playlistUser');
+
+      btnToogleShow.addEventListener('click', toogleShow);
+
+      let list = [
+        {
+          name: 'Muốn cả thế giới biết anh yêu em',
+          file: 'http://localhost:3000/music/1.mp3',
+          image: 'http://localhost:3000/img/1.jpg',
+        },
+        {
+          name: 'Be What You Wanna Be',
+          file: 'http://localhost:3000/music/2.mp3',
+          image: 'http://localhost:3000/img/2.jpg',
+        },
+        {
+          name: 'Xin lỗi Em yêu',
+          file: 'http://localhost:3000/music/3.mp3',
+          image: 'http://localhost:3000/img/3.jpg',
+        },
+        {
+          name: 'Tránh Duyên',
+          file: 'http://localhost:3000/music/4.mp3',
+          image: 'http://localhost:3000/img/4.jpg',
+        },
+      ];
+
+      var jwplayerItem = jwplayer('myalbum-player').setup({
+        playlist: list,
+        width: '1000',
+        height: '40',
+        skin: {
+          name: 'seven',
+        },
+      });
+      for (let i = 0; i < list.length; i++) {
+        DOM_List.innerHTML +=
+          '<li class="item" data-index="' + i + '">' + list[i].name + '</li>';
+      }
+      window.onload = function () {
+        let jw_player = document.querySelector('#myalbum-player');
+        jw_player.style.width = window.innerWidth;
+        jw_player.style.height = '50px';
+        changeIcon();
+        let items = document.querySelectorAll('.item');
+        items.forEach(function (item) {
+          item.addEventListener('click', function () {
+            index = parseInt(this.getAttribute('data-index'));
+            jwplayerItem.load(list);
+            jwplayer().playlistItem(index);
+            jwplayerItem.play();
+          });
+        });
+      };
+      jwplayer().on('complete', function () {
+        let index = jwplayer().getPlaylistIndex();
+        jwplayer().playlistItem(index - 1);
+        jwplayerItem.play();
+      });
+      jwplayer().on('play', function () {
+        let text = document.querySelector('.jw-title-song');
+        let index = jwplayer().getPlaylistIndex();
+        text.textContent = list[index].name;
+      });
+      function toogleShow() {
+        if (playlistUser.classList.contains('active')) {
+          playlistUser.classList.remove('active');
+          playlistUser.style.display = 'none';
+        } else {
+          playlistUser.classList.add('active');
+          playlistUser.style.display = 'block';
+        }
+      }
+
+      jwplayerItem.on('ready', function () {
+        // The following code uses the addButton function from the JW Player API.
+        jwplayerItem.addButton(
+          '<svg xmlns="http://www.w3.org/2000/svg" class="jw-svg-icon jw-svg-icon-prev" viewBox="0 0 240 240"><path transform="translate(240, 0) scale(-1, 1) " d="M165,60v53.3L59.2,42.8C56.9,41.3,55,42.3,55,45v150c0,2.7,1.9,3.8,4.2,2.2L165,126.6v53.3h20v-120L165,60L165,60z"></path></svg>',
+          'Previous',
+          function () {
+            if (jwplayerItem.getPlaylistIndex() === 0) {
+              // If the user is at the first video in the playlist, loop around to the last video
+              jwplayerItem.playlistItem(
+                Math.max(0, jwplayerItem.getPlaylist().length - 1)
+              );
+            } else {
+              // Otherwise, go to the previous video in the playlist
+              jwplayerItem.playlistItem(
+                Math.max(0, jwplayerItem.getPlaylistIndex() - 1)
+              );
+            }
+          },
+          'previous',
+          'jw-icon-prev'
+        );
+        jwplayerItem.addButton(
+          'http://localhost:3000/img/4.jpg',
+          'Repeat All',
+          function () {
+            // jwplayerItem.load(shuffle(list));
+          },
+          'jw-icon-repeat-all',
+          'jw-icon-repeat-all'
+        );
+
+        // The following line is a hack to move the button next to the "next" button
+        // Note that this is not officially supported so use at your own risk. It has worked fine for me so far.
+        $('.jw-controlbar .jw-icon-next').before($('.jw-icon-prev'));
+        $('.jw-controlbar .jw-title-song').before($('.jw-icon-repeat-all'));
+        $('.jw-icon-prev').css({ display: 'flex' });
+        $('.jw-icon-repeat-all').css({ display: 'flex' });
+        $('.jw-slider-time').css({ 'max-width': '300px' });
+        $('.jw-controlbar .jw-button-container').append(
+          '<div style="margin-left:5px;color:white;font-size:12px;" class="jw-title-song"></div>'
+        );
+      });
+      function shuffle(arra1) {
+        var ctr = arra1.length,
+          temp,
+          index;
+        console.log(ctr);
+        while (ctr > 0) {
+          index = Math.floor(Math.random() * ctr);
+          ctr--;
+          temp = arra1[ctr];
+          arra1[ctr] = arra1[index];
+          arra1[index] = temp;
+        }
+        return arra1;
+      }
+      function changeIcon(){
+        let previous  = document.querySelector('.jw-icon-prev');
+        let containt  = document.querySelector('.jw-button-container');
+
+        containt.insertBefore(previous,containt.firstChild);
+      }
+    </script>
+  </body>
+</html>

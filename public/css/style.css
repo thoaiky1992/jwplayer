@@ -1,0 +1,22 @@
+.jw-flag-audio-player {
+  background-color: #fd7575a1  !important;
+}
+.jw-wrapper {
+  background-color: #0000 !important;
+}
+.jw-preview {
+  background: #ffffff00 no-repeat 50% 50% !important;
+}
+.jw-controls-backdrop {
+  background: unset !important;
+}
+.jw-state-idle .jw-controls {
+  background: rgba(0, 0, 0, 0.01) !important;
+}
+.jw-breakpoint-7 .jw-controlbar .jw-button-container .jw-icon-inline:not(.jw-text-live) .jw-svg-icon, .jw-breakpoint-7 .jw-controlbar .jw-button-container .jw-icon-volume .jw-svg-icon{
+  width: 20px !important;
+  height: 20px !important;
+}
+.jw-icon-rewind{
+  display: none !important;
+}
