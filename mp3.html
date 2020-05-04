@@ -18,6 +18,7 @@
         margin: auto;
         left: 0;
         right: 0;
+        display: none;
       }
     </style>
   </head>
@@ -37,35 +38,51 @@
       display: none;">
       <ul id="list"></ul>
     </div>
+    <div id="post-list">
+
+    </div>
+
+
     <script type="text/javascript">
       let windowWidth = window.outerWidth;
       let index = 0;
       let DOM_List = document.querySelector('#list');
       let btnToogleShow = document.querySelector('#toogleShow');
       let playlistUser = document.querySelector('#playlistUser');
+      let post_list = document.querySelector('#post-list');
+      var interval = null;
+      let seeking = true;
 
       btnToogleShow.addEventListener('click', toogleShow);
 
       let list = [
         {
+          id : 1,
           name: 'Muốn cả thế giới biết anh yêu em',
           file: 'http://localhost:3000/music/1.mp3',
           image: 'http://localhost:3000/img/1.jpg',
+          singer : 'Khánh Phương'
         },
         {
+          id : 2,
           name: 'Be What You Wanna Be',
           file: 'http://localhost:3000/music/2.mp3',
           image: 'http://localhost:3000/img/2.jpg',
+          singer : 'Darin Zanyar'
         },
         {
+          id : 3,
           name: 'Xin lỗi Em yêu',
           file: 'http://localhost:3000/music/3.mp3',
           image: 'http://localhost:3000/img/3.jpg',
+          singer : 'Khánh Phương'
         },
         {
+          id : 4,
           name: 'Tránh Duyên',
           file: 'http://localhost:3000/music/4.mp3',
           image: 'http://localhost:3000/img/4.jpg',
+          singer : 'Đình Dũng'
         },
       ];
 
@@ -80,13 +97,57 @@
       for (let i = 0; i < list.length; i++) {
         DOM_List.innerHTML +=
           '<li class="item" data-index="' + i + '">' + list[i].name + '</li>';
+        post_list.innerHTML += item_post(list[i],i)
       }
+
       window.onload = function () {
         let jw_player = document.querySelector('#myalbum-player');
+
+        let post_item = document.querySelectorAll('.img_item_post');
+        post_item.forEach(function(item){
+          item.addEventListener('click',function(){
+            $('.post_item').find('.start').html('00:00')
+            $('.post_item').find('.end').html('00:00')
+            $('.post_item').find('.slider').val(0)
+            jw_player.style.display = "block";
+            index = parseInt(this.getAttribute('data-index'))
+            jwplayerItem.load(list);
+            jwplayer().playlistItem(index);
+            jwplayerItem.play();
+          })
+        })
+        let slider = document.querySelectorAll('.slider');
+        slider.forEach(function(item){
+          item.addEventListener('mouseenter',function(event){
+            seeking = false;
+          })
+          item.addEventListener('mousemove',function(event){
+            seeking = false;
+          })
+          item.addEventListener('mouseup',function(event){
+            let ind = parseInt(event.target.getAttribute('data-index'));
+            if(ind != index){
+              return;
+            }
+            jwplayer().seek(event.target.value)
+            seeking = true;
+          })
+          item.addEventListener('mouseleave',function(event){
+            let ind = parseInt(event.target.getAttribute('data-index'));
+            if(ind != index){
+              return;
+            }
+            seeking = true;
+          })
+        })
+
+        
         jw_player.style.width = window.innerWidth;
         jw_player.style.height = '50px';
         changeIcon();
-        let items = document.querySelectorAll('.item');
+        // let text = document.querySelector('.jw-title-song');
+        // text.textContent = list[index].name;
+        let items = document.querySelectorAll('.item')
         items.forEach(function (item) {
           item.addEventListener('click', function () {
             index = parseInt(this.getAttribute('data-index'));
@@ -97,15 +158,35 @@
         });
       };
       jwplayer().on('complete', function () {
+        $('.post_item').find('.start').html('00:00')
+        $('.post_item').find('.end').html('00:00')
+        $('.post_item').find('.slider').val(0)
         let index = jwplayer().getPlaylistIndex();
         jwplayer().playlistItem(index - 1);
         jwplayerItem.play();
       });
       jwplayer().on('play', function () {
         let text = document.querySelector('.jw-title-song');
-        let index = jwplayer().getPlaylistIndex();
-        text.textContent = list[index].name;
+        index = jwplayer().getPlaylistIndex();
+        text.innerHTML = infoSong(list[index]);
+        seeking = true;
       });
+      jwplayer().on('time',function(e){
+        if(seeking){
+          let ind = jwplayer().getPlaylistIndex();
+          var curtime  = parseInt(Math.floor(jwplayer().getCurrentTime()));
+          var duration = parseInt(Math.floor(jwplayer().getDuration()));
+          // console.log(ind,curtime,duration)
+          if(curtime >= duration){
+            clearInterval(interval);
+          }
+          $(`.post_item[data-index=${ind}]`).find('.start').html(convertTime(curtime));
+          $(`.post_item[data-index=${ind}]`).find('.end').html(convertTime(duration));
+
+          $(`.post_item[data-index=${ind}]`).find(`.slider[data-index=${ind}]`).attr('max',duration);
+          $(`.post_item[data-index=${ind}]`).find(`.slider[data-index=${ind}]`).val(curtime);
+        }
+      })
       function toogleShow() {
         if (playlistUser.classList.contains('active')) {
           playlistUser.classList.remove('active');
@@ -150,19 +231,19 @@
         // The following line is a hack to move the button next to the "next" button
         // Note that this is not officially supported so use at your own risk. It has worked fine for me so far.
         $('.jw-controlbar .jw-icon-next').before($('.jw-icon-prev'));
-        $('.jw-controlbar .jw-title-song').before($('.jw-icon-repeat-all'));
+        $('.jw-controlbar .jw-icon-next').after($('.jw-icon-repeat-all'));
         $('.jw-icon-prev').css({ display: 'flex' });
         $('.jw-icon-repeat-all').css({ display: 'flex' });
         $('.jw-slider-time').css({ 'max-width': '300px' });
-        $('.jw-controlbar .jw-button-container').append(
-          '<div style="margin-left:5px;color:white;font-size:12px;" class="jw-title-song"></div>'
-        );
+        $('.jw-controlbar .jw-button-container').append(infoSong(list[0]));
+        // init song fisrt load page
+        
       });
       function shuffle(arra1) {
         var ctr = arra1.length,
           temp,
           index;
-        console.log(ctr);
+        // console.log(ctr);
         while (ctr > 0) {
           index = Math.floor(Math.random() * ctr);
           ctr--;
@@ -177,6 +258,34 @@
         let containt  = document.querySelector('.jw-button-container');
 
         containt.insertBefore(previous,containt.firstChild);
+      }
+      function infoSong(list){
+        return `<div style="margin-left:5px;color:white;font-size:12px;order:2;" class="jw-title-song">
+            <div style="float:left;">
+              <img style="border-radius:4px;margin-right:5px;" src="${list.image}" width="30" height="30"/>
+            </div>
+            <div style="float:left;">
+              <p style="margin:0;font-size:10px;">${list.singer}</p>
+              <p style="margin:0">${list.name}</p>
+            </div>
+          </div>`
+      }
+      
+      function item_post(list,index){
+        return `<div class="post_${list.id} post_item" data-index="${index}" style="cursor:pointer">
+        <div style="float: left;">
+          <img src="${list.image}" class="img_item_post" data-index="${index}" width="100" height="100" alt="" style="object-fit:cover;">
+        </div>
+        <div  style="float: left;">
+          <p class="name">${list.name}</p>
+          <p><span class="start">00:00</span><input class="slider" data-index="${index}" value="0" min="0" max="100" type="range"> <span class="end">00:00</span></p>
+        </div>
+      </div>`
+      }
+      function convertTime(secs){
+        let minute  = '0' + Math.floor(secs/60);
+        let second = '0' + Math.floor(secs%60);
+        return minute.slice(-2) + ':' + second.slice(-2);
       }
     </script>
   </body>
