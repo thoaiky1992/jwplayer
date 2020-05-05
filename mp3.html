@@ -18,7 +18,8 @@
         margin: auto;
         left: 0;
         right: 0;
-        display: none;
+        /* display: none; */
+        overflow: unset;
       }
     </style>
   </head>
@@ -88,11 +89,8 @@
 
       var jwplayerItem = jwplayer('myalbum-player').setup({
         playlist: list,
-        width: '1000',
+        width: '2000',
         height: '40',
-        skin: {
-          name: 'seven',
-        },
       });
       for (let i = 0; i < list.length; i++) {
         DOM_List.innerHTML +=
@@ -101,6 +99,7 @@
       }
 
       window.onload = function () {
+        
         let jw_player = document.querySelector('#myalbum-player');
 
         let post_item = document.querySelectorAll('.img_item_post');
@@ -235,8 +234,10 @@
         $('.jw-icon-prev').css({ display: 'flex' });
         $('.jw-icon-repeat-all').css({ display: 'flex' });
         $('.jw-slider-time').css({ 'max-width': '300px' });
-        $('.jw-controlbar .jw-button-container').append(infoSong(list[0]));
+        $('.jw-controlbar .jw-button-container').append(infoSong(list[0])); 
         // init song fisrt load page
+        document.querySelector('.jw-horizontal-volume-container').remove();
+        document.querySelector('.jw-icon-volume').innerHTML += '<div class="div_range_volume"><input id="input_range_volume" type="range" value="0"></div>'
         
       });
       function shuffle(arra1) {
