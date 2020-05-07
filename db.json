@@ -1,8 +1,1 @@
-{
-  "users": [
-    { "name": "Ky Smile", "age": 18 },
-    { "name": "Bao Bao", "age": 20 },
-    { "name": "Tran Hieu", "age": 20 },
-    { "name": "Tran Hieu", "age": 20 }
-  ]
-}
+{"users":[{"name":"Ky Smile","age":18},{"name":"Bao Bao","age":20},{"name":"Tran Hieu","age":20},{"name":"Tran Hieu","age":20},{"name":"Tran Hieu","age":20},{"name":"Tran Hieu","age":20},{"name":"Tran Hieu","age":20},{"name":"Tran Hieu","age":20},{"name":"Tran Hieu","age":20},{"name":"Tran Hieu","age":20},{"name":"Tran Hieu","age":20},{"name":"Tran Hieu","age":20},{"name":"Tran Hieu","age":20},{"name":"Tran Hieu","age":20},{"name":"Tran Hieu","age":20},{"name":"Tran Hieu","age":20},{"name":"Tran Hieu","age":20},{"name":"Tran Hieu","age":20},{"name":"Tran Hieu","age":20}]}

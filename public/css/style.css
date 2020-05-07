@@ -169,3 +169,6 @@ input[type=range]:hover::-webkit-slider-thumb {
   background: #4caf50;
   cursor: pointer;
 }
+.jw-breakpoint-7 .jw-controlbar .jw-button-container .jw-text{
+  font-size: 12px !important;
+}
