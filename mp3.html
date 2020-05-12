@@ -232,7 +232,7 @@
           'jw-icon-prev'
         );
         jwplayerItem.addButton(
-          'http://localhost:3000/img/4.jpg',
+          'http://localhost:3000/img/icon-replay.svg',
           'Repeat All',
           function () {
             // jwplayerItem.load(shuffle(list));
@@ -240,18 +240,29 @@
           'jw-icon-repeat-all',
           'jw-icon-repeat-all'
         );
+        jwplayerItem.addButton(
+          'http://localhost:3000/img/icon-autonext.svg',
+          'Repeat All Random',
+          function () {
+            // jwplayerItem.load(shuffle(list));
+          },
+          'jw-icon-repeat-all-random',
+          'jw-icon-repeat-all-random'
+        );
 
         // The following line is a hack to move the button next to the "next" button
         // Note that this is not officially supported so use at your own risk. It has worked fine for me so far.
         $('.jw-controlbar .jw-icon-next').before($('.jw-icon-prev'));
         $('.jw-controlbar .jw-icon-next').after($('.jw-icon-repeat-all'));
+        $('.jw-controlbar .jw-icon-repeat-all-random').after($('.jw-icon-repeat-all'));
         $('.jw-icon-prev').css({ display: 'flex' });
         $('.jw-icon-repeat-all').css({ display: 'flex' });
-        $('.jw-slider-time').css({ 'max-width': '300px' });
+        $('.jw-icon-repeat-all-random').css({ display: 'flex' });
+        $('.jw-slider-time').css({ 'max-width': '292px' });
         $('.jw-controlbar .jw-button-container').append(infoSong(list[0])); 
         // init song fisrt load page
         document.querySelector('.jw-horizontal-volume-container').remove();
-        document.querySelector('.jw-icon-volume').innerHTML += '<div class="div_range_volume"><input id="input_range_volume" min="0" max="100" type="range" value="'+jwplayer().getVolume()+'"><div class="volume_arrow"></div></div>'
+        document.querySelector('.jw-icon-volume').innerHTML += '<div class="div_range_volume"><input id="input_range_volume" min="0" max="100" type="range" value="'+jwplayer().getVolume()+'"></div>'
         $('#input_range_volume').css({'backgroundSize': (jwplayer().getVolume()+'% 100%')})
       });
       function shuffle(arra1) {
@@ -275,13 +286,13 @@
         containt.insertBefore(previous,containt.firstChild);
       }
       function infoSong(list){
-        return `<div style="margin-left:5px;color:white;font-size:12px;order:2;" class="jw-title-song">
-            <div style="float:left;">
+        return `<div class="jw-title-song">
+            <div class="image">
               <img style="border-radius:4px;margin-right:5px;" src="${list.image}" width="30" height="30"/>
             </div>
-            <div style="float:left;">
-              <p style="margin:0;font-size:10px;">${list.singer}</p>
-              <p style="margin:0">${list.name}</p>
+            <div class="info">
+              <p class="singer">${list.singer}</p>
+              <p class="name">${list.name}</p>
             </div>
           </div>`
       }

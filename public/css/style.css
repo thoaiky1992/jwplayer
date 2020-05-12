@@ -1,5 +1,6 @@
 .jw-flag-audio-player {
-  background-color: #fd7575a1 !important;
+  background-color: var(--white) !important;
+  box-shadow: 0px 0px 1px black;
 }
 .jw-wrapper {
   background-color: #0000 !important;
@@ -34,20 +35,59 @@
   width: 50px !important;
   height: 50px !important;
 }
+.jw-title-song{
+  color:white;
+  font-size:12px;
+  width: 300px;
+}
+.jw-title-song .image{
+  float:left;
+}
+.jw-title-song .info{
+  float:left;
+}
+.jw-title-song .info .singer{
+  margin: 0;
+  font-family: Helvetica , sans-serif;
+  font-size: 12px;
+  color: #5e5e5e;
+}
+.jw-title-song .info .name{
+  margin : 0;
+  font-family: Helvetica , sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #222222;
+}
 
 .jw-text-elapsed {
   justify-content: center !important;
   padding-left: 10px !important;
 }
-.jw-flag-audio-player .jw-controlbar .jw-slider-time {
-  order: 0 !important;
+
+.jw-slider-time{
+  order : 1;
 }
-.jw-icon-volume {
-  order: 1 !important;
+.jw-text-elapsed{
+  order : 2;
 }
-.jw-horizontal-volume-container {
-  order: 2 !important;
+.jw-text-countdown{
+  order : 3;
 }
+.jw-text-duration{
+  order : 4;
+}
+.jw-icon-volume{
+  order : 5;
+}
+.jw-title-song{
+  order : 6;
+}
+.jw-icon-next , .jw-icon-playback , .jw-icon-prev , .jw-icon-volume , .jw-title-song , .jw-text-elapsed , .jw-text-countdown , .jw-text-duration{
+  color: #222222 !important;
+}
+
+
 .jw-icon-next {
   display: flex !important;
 }
@@ -68,23 +108,30 @@
   border-color: #ccc;
   box-shadow: 0 2px 4px rgba(0,0,0,.1);
   border: 1px solid #9a8c8c40;
-  border-bottom-left-radius: 2px;
-  border-top-left-radius: 2px;
+  border-bottom-left-radius: 1px;
+  border-top-left-radius: 1px;
   display: none;
+  -webkit-animation-name: moveit;
+  /* Standard syntax */  -webkit-animation-duration: 0.2s;
+  transition: 0.5 all;
 
+  animation-name: moveit;
+  animation-duration: 0.2s;
+
+}
+/* Chrome, Safari, Opera */
+@-webkit-keyframes moveit {
+    0% {margin-top: -150px;}
+    100% {margin-top: -85px;}
+}
+ 
+/* Standard syntax */
+@keyframes moveit {
+    0% {margin-top: -150px;}
+    100% {margin-top: -85px;}
 }
 .jw-icon-volume:hover .div_range_volume{
   display: flex;
-}
-.volume_arrow{
-  width: 0; 
-	height: 0; 
-	border-top: 10px solid transparent; 
-	border-bottom: 10px solid transparent; /* 40px height (20+20) */
-  border-right: 10px solid #f2f2f2;
-  position:absolute;
-  left : -8px;
-  top: 8px;
 }
 input[type=range] {
   margin: auto;
@@ -93,7 +140,7 @@ input[type=range] {
   width: 100px;
   height: 2px;
   background-color: #dedede;
-  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #ff1100), color-stop(100%, #ff1100));
+  background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #42b380 ), color-stop(100%, #42b380 ));
   background-size: 0% 100%;
   background-repeat: no-repeat;
   border-radius: 10px;
@@ -113,8 +160,8 @@ input[type=range]::-webkit-slider-thumb {
 height: 12px;
 width: 12px;
   border: 0;
-  background: red;
-  border: 1px solid red;
+  background: #42b380 ;
+  border: 1px solid #42b380 ;
   border-radius: 8px;
   -webkit-appearance: none;
 
@@ -171,4 +218,24 @@ input[type=range]:hover::-webkit-slider-thumb {
 }
 .jw-breakpoint-7 .jw-controlbar .jw-button-container .jw-text{
   font-size: 12px !important;
+}
+.jw-controlbar{
+  width: 1000px;
+  margin: auto;
+}
+.jw-breakpoint-7 .jw-controlbar .jw-slider-time .jw-slider-container{
+  height: 4px !important;
+  background-color: #dfdfdf !important;
+}
+.jw-knob , .jw-progress{
+  background-color: #42b380 !important;
+}
+.jw-breakpoint-7 .jw-controlbar .jw-slider-time{
+  padding: 0 !important;
+}
+.jw-slider-time .jw-buffer{
+  background-color: #dfdfdf !important;
+}
+..jw-controlbar .jw-button-image{
+  max-height: 20px !important;
 }
