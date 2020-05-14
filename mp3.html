@@ -59,7 +59,7 @@
       let list = [
         {
           id : 1,
-          name: 'Muốn cả thế giới biết anh yêu em',
+          name: 'Muốn cả thế giới biết anh yêu emmmmmmmmmmmmmmmmm',
           file: 'http://localhost:3000/music/1.mp3',
           image: 'http://localhost:3000/img/1.jpg',
           singer : 'Khánh Phương'
@@ -89,8 +89,8 @@
 
       var jwplayerItem = jwplayer('myalbum-player').setup({
         playlist: list,
-        width: '2000',
-        height: '40',
+        width: window.innerWidth,
+        height: '0',
       });
       for (let i = 0; i < list.length; i++) {
         DOM_List.innerHTML +=
@@ -154,6 +154,7 @@
 
         
         jw_player.style.width = window.innerWidth;
+        jw_player.style.transition = '0.2s';
         jw_player.style.height = '50px';
         changeIcon();
         // let text = document.querySelector('.jw-title-song');
@@ -249,15 +250,26 @@
           'jw-icon-repeat-all-random',
           'jw-icon-repeat-all-random'
         );
+        jwplayerItem.addButton(
+          'http://localhost:3000/img/playlist.svg',
+          'Play List',
+          function () {
+            // jwplayerItem.load(shuffle(list));
+          },
+          'jw-icon-playlist',
+          'jw-icon-playlist'
+        );
 
         // The following line is a hack to move the button next to the "next" button
         // Note that this is not officially supported so use at your own risk. It has worked fine for me so far.
         $('.jw-controlbar .jw-icon-next').before($('.jw-icon-prev'));
         $('.jw-controlbar .jw-icon-next').after($('.jw-icon-repeat-all'));
         $('.jw-controlbar .jw-icon-repeat-all-random').after($('.jw-icon-repeat-all'));
+        $('.jw-controlbar .jw-icon-playlist').after($('.jw-title-song'));
         $('.jw-icon-prev').css({ display: 'flex' });
         $('.jw-icon-repeat-all').css({ display: 'flex' });
         $('.jw-icon-repeat-all-random').css({ display: 'flex' });
+        $('.jw-icon-playlist').css({ display: 'flex' });
         $('.jw-slider-time').css({ 'max-width': '292px' });
         $('.jw-controlbar .jw-button-container').append(infoSong(list[0])); 
         // init song fisrt load page
@@ -288,7 +300,7 @@
       function infoSong(list){
         return `<div class="jw-title-song">
             <div class="image">
-              <img style="border-radius:4px;margin-right:5px;" src="${list.image}" width="30" height="30"/>
+              <img style="border-radius:4px;margin-right:5px;" src="${list.image}" width="38" height="38"/>
             </div>
             <div class="info">
               <p class="singer">${list.singer}</p>
